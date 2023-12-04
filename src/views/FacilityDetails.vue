@@ -231,21 +231,21 @@
 
         <div class="segments">
           <ion-segment scrollable v-model="segment">
-            <ion-segment-button value="external-mappings" layout="icon-start">
+            <ion-segment-button value="external-mappings" @click="updateDirection($event)" layout="icon-start">
               <ion-icon :icon="globeOutline" />
               <ion-label>{{ translate("External mappings") }}</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="staff" layout="icon-start">
+            <ion-segment-button value="staff" @click="updateDirection($event)" layout="icon-start">
               <ion-icon :icon="personOutline" />
               <ion-label>{{ translate("Staff") }}</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="locations" layout="icon-start">
+            <ion-segment-button value="locations" @click="updateDirection($event)" layout="icon-start">
               <ion-icon :icon="locationOutline" />
               <ion-label>{{ translate("Locations") }}</ion-label>
             </ion-segment-button>
           </ion-segment>
 
-          <Transition>
+          <Transition name="left">
             <div v-if="segment === 'external-mappings'">
               <ion-button fill="outline" @click="openExternalMappingPopover">
                 <ion-icon :icon="addCircleOutline" slot="start" />
@@ -477,7 +477,8 @@ export default defineComponent({
       isTimeModalOpen: false as boolean,
       isLoading: true, // shows whether the facility information fetching is completed or not
       segment: 'external-mappings',
-      defaultDaysToShip: '' // not assinging 0 by default as it will convey the user that the facility can ship same day(as the value is 0), but actually defaultDays are not setup on the facility
+      defaultDaysToShip: '', // not assinging 0 by default as it will convey the user that the facility can ship same day(as the value is 0), but actually defaultDays are not setup on the facility
+      animationDirection: 'left'
     }
   },
   computed: {
@@ -497,6 +498,10 @@ export default defineComponent({
     this.isLoading = false
   },
   methods: {
+    updateDirection(ev: any) {
+      console.log(ev);
+      
+    },
     goToLink(link: string) {
       const url = link.startsWith('http') ? link : `https://${link}`
       // opening link in new tab without passing any reference
@@ -849,14 +854,22 @@ ion-segment {
   width: 100%;
 }
 
-.v-enter-active, .v-leave-active {
+.right-enter-active, .right-leave-active, .left-enter-active, .left-leave-active {
   transition: all 1s linear;
 }
 
-.v-enter-from {
+.left-enter-from {
+  transform: translateX(-100vw);
+}
+.left-leave-to {
+  position: absolute;
   transform: translateX(100vw);
 }
-.v-leave-to {
+
+.right-enter-from {
+  transform: translateX(100vw);
+}
+.right-leave-to {
   position: absolute;
   transform: translateX(-100vw);
 }
